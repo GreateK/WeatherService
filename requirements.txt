@@ -1,0 +1,14 @@
+dotenv
+fastapi
+aiosqlite
+sqlalchemy
+uvicorn[standard]
+pydantic
+pydantic[email]
+pydantic_settings
+httpx
+passlib[bcrypt]
+python-jose[cryptography]
+apscheduler
+bcrypt
+PyJWT
