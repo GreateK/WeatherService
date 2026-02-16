@@ -5,6 +5,7 @@ from sqlalchemy import DateTime, CheckConstraint
 
 from src.database import Base
 
+
 class UserModel(Base):
     __tablename__ = "users"
 
@@ -20,6 +21,7 @@ class UserModel(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+
 
 class CitiesModel(Base):
     __tablename__ = 'cities'
@@ -51,6 +53,4 @@ class ForecastsModel(Base):
     precipitation: Mapped[float]
     wind_speed: Mapped[float]
 
-
     city: Mapped["CitiesModel"] = relationship(back_populates="forecasts")
-

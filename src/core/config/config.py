@@ -6,11 +6,9 @@ load_dotenv()
 
 class Config:
     def __init__(self):
-        # База данных
         self.DATABASE_URL = self._get_value("DATABASE_URL")
         self.BASE_URL = self._get_value("BASE_URL")
 
-        # JWT
         self.SECRET_KEY = self._get_value("SECRET_KEY")
         self.ALGORITHM = self._get_env("ALGORITHM")
         self.ACCESS_TOKEN_EXPIRE_MINUTES = self._get_alive("ACCESS_TOKEN_EXPIRE_MINUTES")

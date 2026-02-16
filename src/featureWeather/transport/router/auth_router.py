@@ -9,16 +9,13 @@ from src.featureWeather.service.user import AuthService
 from src.featureWeather.transport.dependencies import get_auth_service
 from src.featureWeather.transport.mappers import to_domain_user
 
-
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-# ---------------- REGISTER ----------------
-
 @router.post("/register")
 async def register(
-    data: UserRegistrationRequest,
-    service: AuthService = Depends(get_auth_service)
+        data: UserRegistrationRequest,
+        service: AuthService = Depends(get_auth_service)
 ):
     try:
         domain_user = to_domain_user(data)
@@ -34,16 +31,15 @@ async def register(
     except UserStringIsEmpty:
         raise HTTPException(400, "Строка не может быть пустой!")
     except InvalidCredentials:
-        raise HTTPException(400, f"Невалидные данные: логин минимум 4 символа, пароль должен содержать спецсимволы и заглавную букву.")
+        raise HTTPException(400,
+                            f"Невалидные данные: логин минимум 4 символа, пароль должен содержать спецсимволы и заглавную букву.")
 
-
-# ---------------- LOGIN ----------------
 
 @router.post("/login")
 async def login(
-    data: UserRegistrationRequest,
-    response: Response,
-    service: AuthService = Depends(get_auth_service)
+        data: UserRegistrationRequest,
+        response: Response,
+        service: AuthService = Depends(get_auth_service)
 ):
     try:
         domain_user = to_domain_user(data)
@@ -62,8 +58,6 @@ async def login(
     except InvalidCredentials:
         raise HTTPException(401, "Неверные данные")
 
-
-# ---------------- LOGOUT ----------------
 
 @router.post("/logout")
 def logout(response: Response):

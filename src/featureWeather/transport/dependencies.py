@@ -9,8 +9,6 @@ from ..service.user import AuthService
 from ..service.weather import WeatherService
 
 
-# ---------- repositories ----------
-
 def get_user_repo(session: AsyncSession = Depends(get_db)):
     return UserRepository(session)
 
@@ -18,8 +16,6 @@ def get_user_repo(session: AsyncSession = Depends(get_db)):
 def get_weather_repo(session: AsyncSession = Depends(get_db)):
     return Weather(session)
 
-
-# ---------- services ----------
 
 def get_auth_service(repo: UserRepository = Depends(get_user_repo)):
     return AuthService(repo)

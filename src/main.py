@@ -28,10 +28,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": "Недопустимый формат данных."}
     )
 
+
 @app.on_event("startup")
 async def startup():
-
-    # ---------- БАЗА ----------
     db_file = Path("weather.db")
 
     if not db_file.exists():
@@ -39,7 +38,6 @@ async def startup():
         await setup_database()
         print("База данных создана")
 
-    # ---------- SCHEDULER ----------
     async def weather_job():
         while True:
             try:

@@ -7,7 +7,7 @@ import jwt
 
 def get_id_from_token(req: Request) -> int:
     token = req.cookies.get("access_token")
-        
+
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -27,7 +27,7 @@ def get_id_from_token(req: Request) -> int:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token payload"
         )
-    
+
     return user_id
 
 

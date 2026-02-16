@@ -30,10 +30,10 @@ class CityCreateDTO(BaseModel):
     longitude: float
     id: int
 
+
 class WeatherForecastDTO(BaseModel):
     city: str
     temperature: Optional[float] = None
     humidity: Optional[int] = None
     wind_speed: Optional[float] = None
     precipitation: Optional[float] = None
-

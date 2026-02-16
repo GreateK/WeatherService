@@ -13,16 +13,12 @@ from src.featureWeather.transport.schemas.response import (
 )
 
 
-# ================= USER =================
-
 def to_domain_user(dto: UserRegistrationRequest) -> User:
     return User(
         login=dto.username,
         password=dto.password
     )
 
-
-# ================= CITY =================
 
 def to_domain_city(dto: CityCreateRequest, user_id: int) -> City:
     return City(
@@ -42,11 +38,9 @@ def to_city_dto(domain) -> CityCreateDTO:
     )
 
 
-# ================= WEATHER =================
-
 def to_domain_weather(dto: WeatherByCityAndTimeRequest, user_id: int):
     return WeatherInTime(
-        city = dto.city,
+        city=dto.city,
         user_id=user_id,
         at_time=dto.time,
         fields=[p.value for p in dto.parameters]

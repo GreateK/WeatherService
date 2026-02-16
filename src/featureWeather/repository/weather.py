@@ -24,14 +24,19 @@ class IWeatherRepository(ABC):
     @abstractmethod
     async def save_city(self, data: City) -> CityCreate:
         pass
+
     async def get_users_cities(self, user_id) -> list[CityCreate]:
         pass
+
     async def get_all_cities(self) -> list[CityCreate]:
         pass
+
     async def get_forecast(self, data: WeatherInTime) -> WeatherForecast:
         pass
+
     async def save_forecasts(self, city_id, forecasts: list[ForecastsList]):
         pass
+
     async def replace_forecasts(self, city_id: int, forecasts: list[ForecastsList]):
         pass
 
@@ -43,12 +48,12 @@ class Weather(IWeatherRepository):
 
     async def save_city(self, data: City) -> CityCreate:
         try:
-            stmt = select(CitiesModel).where(
+            query = select(CitiesModel).where(
                 CitiesModel.name == data.city,
                 CitiesModel.user_id == data.user_id
             )
 
-            result = await self.session.execute(stmt)
+            result = await self.session.execute(query)
             exists = result.scalar_one_or_none()
 
             if exists:
@@ -76,7 +81,6 @@ class Weather(IWeatherRepository):
             await self.session.rollback()
             raise DatabaseError()
 
-
     async def get_users_cities(self, user_id) -> list[CityCreate]:
         try:
             query = (
@@ -102,7 +106,6 @@ class Weather(IWeatherRepository):
             await self.session.rollback()
             raise DatabaseError()
 
-
     async def get_all_cities(self) -> list[CityCreate]:
         try:
             result = await self.session.execute(
@@ -125,15 +128,14 @@ class Weather(IWeatherRepository):
             await self.session.rollback()
             raise DatabaseError()
 
-
     async def get_forecast(self, data: WeatherInTime) -> WeatherForecast | None:
         try:
-            stmt = select(CitiesModel).where(
+            query = select(CitiesModel).where(
                 CitiesModel.name == data.city,
                 CitiesModel.user_id == data.user_id
             )
 
-            result = await self.session.execute(stmt)
+            result = await self.session.execute(query)
             selected_city = result.scalar_one_or_none()
 
             if not selected_city:
@@ -146,12 +148,12 @@ class Weather(IWeatherRepository):
                 time(data.at_time.hour, minute)
             )
 
-            stmt = select(ForecastsModel).where(
+            query = select(ForecastsModel).where(
                 ForecastsModel.city_id == selected_city.id,
                 ForecastsModel.timestamp == dt
             )
 
-            result = await self.session.execute(stmt)
+            result = await self.session.execute(query)
 
             forecast = result.scalar_one_or_none()
 
@@ -169,7 +171,6 @@ class Weather(IWeatherRepository):
         except SQLAlchemyError:
             await self.session.rollback()
             raise DatabaseError()
-
 
     async def save_forecasts(self, city_id: int, forecasts: list[ForecastsList]):
         try:
@@ -191,7 +192,6 @@ class Weather(IWeatherRepository):
         except SQLAlchemyError:
             await self.session.rollback()
             raise DatabaseError()
-
 
     async def replace_forecasts(self, city_id: int, forecasts: list[ForecastsList]):
         try:
@@ -217,4 +217,3 @@ class Weather(IWeatherRepository):
         except SQLAlchemyError:
             await self.session.rollback()
             raise DatabaseError()
-

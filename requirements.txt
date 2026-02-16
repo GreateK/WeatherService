@@ -12,3 +12,5 @@ python-jose[cryptography]
 apscheduler
 bcrypt
 PyJWT
+pytest
+pytest-asyncio

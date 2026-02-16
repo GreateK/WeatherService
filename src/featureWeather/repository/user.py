@@ -12,6 +12,7 @@ class IUserRepository(ABC):
     @abstractmethod
     async def get_by_login(self, login: str) -> UserCreated:
         pass
+
     async def create(self, user: UserCreated) -> UserCreated:
         pass
 
@@ -20,7 +21,6 @@ class UserRepository(IUserRepository):
 
     def __init__(self, session: AsyncSession):
         self.session = session
-
 
     async def get_by_login(self, login: str) -> UserCreated | None:
         try:
@@ -60,4 +60,3 @@ class UserRepository(IUserRepository):
         except SQLAlchemyError:
             await self.session.rollback()
             raise DatabaseError()
-

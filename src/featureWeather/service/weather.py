@@ -50,7 +50,6 @@ class WeatherService(IWeatherService):
     def __init__(self, repo: IWeatherRepository):
         self.repo = repo
 
-
     async def _fetch_weather(self, latitude: float, longitude: float) -> dict:
         params = {
             "latitude": latitude,
@@ -78,8 +77,6 @@ class WeatherService(IWeatherService):
         except httpx.HTTPError as e:
             raise WeatherAPIUnavailableError(f"HTTP error: {str(e)}")
 
-
-
     def _map_to_domain(self, raw: dict) -> list[ForecastsList]:
         forecasts: list[ForecastsList] = []
 
@@ -95,7 +92,6 @@ class WeatherService(IWeatherService):
             )
 
         return forecasts
-
 
     async def add_city(self, data: City) -> CityCreate:
         city = await self.repo.save_city(data)
@@ -124,7 +120,7 @@ class WeatherService(IWeatherService):
                 await self.repo.replace_forecasts(city.id, forecasts)
 
         except httpx.ConnectError:
-                raise WeatherAPINetworkError("Отсутствует подключение к интернету")
+            raise WeatherAPINetworkError("Отсутствует подключение к интернету")
         except httpx.TimeoutException:
             raise WeatherAPITimeoutError("Таймаут сервиса")
         except httpx.HTTPError as e:
@@ -144,6 +140,9 @@ class WeatherService(IWeatherService):
             "current": "temperature_2m,wind_speed_10m,pressure_msl",
             "timezone": "auto",
         }
+
+        if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
+            raise InvalidCredentials()
 
         try:
             async with httpx.AsyncClient(timeout=5.0) as client:
@@ -168,4 +167,3 @@ class WeatherService(IWeatherService):
             raise WeatherAPITimeoutError("Таймаут сервиса")
         except httpx.HTTPError as e:
             raise WeatherAPIUnavailableError(f"Ошибка HTTP: {str(e)}")
-

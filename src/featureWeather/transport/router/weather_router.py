@@ -35,18 +35,15 @@ from src.featureWeather.transport.mappers import (
     to_weather_dto
 )
 
-
 router = APIRouter(prefix="/weather", tags=["Weather"])
 
-# ---------------- ADD CITY ----------------
 
-@router.post("/cities", response_model = CityCreateDTO)
+@router.post("/cities", response_model=CityCreateDTO)
 async def add_city(
-    req: Request,
-    data: CityCreateRequest = ...,
-    service: WeatherService = Depends(get_weather_service)
+        req: Request,
+        data: CityCreateRequest = ...,
+        service: WeatherService = Depends(get_weather_service)
 ):
-    
     user_id = get_id_from_token(req)
 
     try:
@@ -55,7 +52,7 @@ async def add_city(
         return to_city_dto(result)
 
     except CityAlreadyExists as e:
-        raise HTTPException (
+        raise HTTPException(
             status_code=400,
             detail={
                 "error": "internal_error",
@@ -81,12 +78,12 @@ async def add_city(
                 "details": str(e)
             }
         )
-# ---------------- GET CITIES ----------------
 
-@router.get("/cities", response_model = List[CityCreateDTO])
-async def get_cities(req: Request, 
-    service: WeatherService = Depends(get_weather_service)
-):
+
+@router.get("/cities", response_model=List[CityCreateDTO])
+async def get_cities(req: Request,
+                     service: WeatherService = Depends(get_weather_service)
+                     ):
     try:
         user_id = get_id_from_token(req)
         result = await service.get_cities(user_id)
@@ -102,14 +99,12 @@ async def get_cities(req: Request,
             }
         )
 
-# ---------------- FORECAST ----------------
 
-@router.get("/forecast", response_model = WeatherForecastDTO | None)
+@router.get("/forecast", response_model=WeatherForecastDTO | None)
 async def forecast(req: Request,
-    data: WeatherByCityAndTimeRequest = Query(...),
-    service: WeatherService = Depends(get_weather_service)
-):
-    
+                   data: WeatherByCityAndTimeRequest = Query(...),
+                   service: WeatherService = Depends(get_weather_service)
+                   ):
     user_id = get_id_from_token(req)
 
     try:
@@ -141,14 +136,24 @@ async def forecast(req: Request,
             }
         )
 
+
 @router.get("/current", response_model=WeatherCurrentDTO)
 async def get_current_weather(
-    coords: CoordinatesRequest = Query(...),
-    weather_service: WeatherService = Depends(get_weather_service)
+        coords: CoordinatesRequest = Query(...),
+        weather_service: WeatherService = Depends(get_weather_service)
 ):
     try:
         return await weather_service.get_current_weather(coords.latitude, coords.longitude)
-        
+
+    except InvalidCredentials as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "wrong_credentials",
+                "message": "Введены неверные координаты.",
+                "details": e.message
+            }
+        )
     except WeatherAPINetworkError as e:
         raise HTTPException(
             status_code=503,
@@ -203,5 +208,3 @@ async def get_current_weather(
                 "details": str(e)
             }
         )
-
-
