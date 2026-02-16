@@ -130,9 +130,9 @@ src
 ├──core/
 │  └──config/
 │     └──config.py
-├──domain/                           # Конфигурация приложения
-│  ├──user.py                      # Загрузка конфигурации (env, yaml)
-│  └──weather.py                    # Файл-конфигурации (настройки)
+├──domain/                      
+│  ├──user.py                
+│  └──weather.py                   
 ├──errors/ 
 │  └──exceptions.py
 ├──database/ 
